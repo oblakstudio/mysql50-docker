@@ -19,7 +19,10 @@ RUN printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d \
     && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
 COPY my.cnf /etc/mysql/my.cnf
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 3306
 VOLUME /var/lib/mysql
-CMD ["/usr/sbin/mysqld", "--user=mysql"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["mysqld"]
