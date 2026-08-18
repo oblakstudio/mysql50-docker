@@ -171,6 +171,7 @@ make build-all   # Build all release platforms into the Buildx cache
 make structure   # Verify package, config, and image cleanup
 make smoke       # Verify initialization, TCP auth, init files, and persistence
 make smoke-all   # Attempt the lifecycle smoke test on every release platform
+make publish-check # Verify attestation and Docker Hub README publishing settings
 make run         # Run the selected image locally
 make shell       # Open Bash in the selected image
 ```
@@ -179,6 +180,20 @@ Override `PLATFORM`, `IMAGE`, `VERSION`, `ROOT_PASSWORD`, or `PORT` as needed.
 Multi-platform targets require a Buildx builder with the corresponding QEMU
 handlers. `make smoke-all` fails honestly when the host emulator cannot run an
 architecture's MySQL bootstrap; this is a known possibility for `arm/v5`.
+
+## Supply-chain metadata
+
+Published images include max-level SLSA provenance and an SPDX SBOM for every
+platform. BuildKit attaches both attestations to the multi-platform image index,
+so they can be inspected from Docker Hub without pulling every image:
+
+```bash
+docker buildx imagetools inspect oblakstudio/mysql50:latest
+```
+
+The release workflow also publishes this README and its short description to
+the `oblakstudio/mysql50` Docker Hub repository after every successful image
+push.
 
 ## Releases
 

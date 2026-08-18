@@ -5,7 +5,7 @@ PLATFORMS     ?= linux/amd64,linux/386,linux/arm/v5
 ROOT_PASSWORD ?= root
 PORT          ?= 3306
 
-.PHONY: build build-all run shell structure smoke smoke-all push clean help
+.PHONY: build build-all run shell structure smoke smoke-all publish-check push clean help
 
 build: ## Build the selected platform as :latest and :$(VERSION)
 	docker build --platform=$(PLATFORM) \
@@ -39,8 +39,12 @@ smoke-all: ## Build and smoke-test every release platform
 		IMAGE="$$tag" PLATFORM="$$platform" SKIP_BUILD=1 ./tests/smoke.sh; \
 	done
 
+publish-check: ## Verify release attestations and Docker Hub README publishing
+	./tests/publishing-workflow.sh
+
 push: ## Build and publish the release platform index
-	docker buildx build --push --platform=$(PLATFORMS) \
+	docker buildx build --push --provenance=mode=max --sbom=true \
+		--platform=$(PLATFORMS) \
 		-t $(IMAGE):latest -t $(IMAGE):$(VERSION) .
 
 clean: ## Remove local development images without prompting
