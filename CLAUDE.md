@@ -52,18 +52,25 @@ bd close <id>         # Complete work
 
 ## Build & Test
 
-_Add your build and test commands here_
-
 ```bash
-# Example:
-# npm install
-# npm test
+make build       # Build linux/amd64 by default
+make structure   # Verify package, config, and image cleanup
+make smoke       # Verify initialization and persistence
+make smoke-all   # Build and smoke all release platforms
+make build-all   # Build all platforms into Buildx cache
 ```
 
 ## Architecture Overview
 
-_Add a brief overview of your project architecture_
+The image packages Debian Etch's pinned MySQL 5.0.32 server/client packages.
+`docker-entrypoint.sh` initializes empty datadirs through a socket-only temporary
+server and leaves existing datadirs unchanged. Releases publish one manifest
+for `linux/amd64`, `linux/386`, and `linux/arm/v5`.
 
 ## Conventions & Patterns
 
-_Add your project-specific conventions here_
+- Keep pinned APT installation before local `COPY` instructions.
+- Keep shell compatible with Debian Etch's Bash 3 and validate with `bash -n`.
+- Preserve Docker Official Image semantics where MySQL 5.0 supports them.
+- Use non-interactive cleanup and never commit database dumps.
+- Run `make structure` and `make smoke` after runtime changes.
