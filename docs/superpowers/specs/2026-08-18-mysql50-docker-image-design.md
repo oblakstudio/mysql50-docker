@@ -53,7 +53,8 @@ The Dockerfile will optimize cache reuse and size as follows:
 - Keep stable base and package-installation instructions before local `COPY`
   instructions so entrypoint and configuration edits do not reinstall MySQL.
 - Run APT update, pinned installation, and cleanup in the same layer.
-- Use Etch APT's `--no-install-recommends` option.
+- Disable recommended packages with Etch APT's compatible
+  `-o APT::Install-Recommends=false` configuration option.
 - Remove APT lists, downloaded package archives, temporary files, and the
   package-created datadir in the layers that create them.
 - Copy only files needed at runtime: `my.cnf` and `docker-entrypoint.sh`.
