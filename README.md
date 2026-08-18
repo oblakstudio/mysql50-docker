@@ -43,7 +43,10 @@ The image index publishes these Etch-supported platforms:
 - `linux/arm/v5`
 
 There is no native `linux/arm64` image. An ARM64 host must explicitly request
-and emulate the 32-bit ARM image when its Docker/QEMU setup supports it:
+and emulate the 32-bit ARM image when its Docker/QEMU setup supports it.
+Buildx can build the artifact, but current user-mode QEMU may fail MySQL 5.0's
+threaded bootstrap with `Can't create interrupt-thread`; treat emulated runs as
+best effort and validate production use on native compatible ARM32 hardware.
 
 ```bash
 docker run --rm --platform=linux/arm/v5 \
@@ -167,14 +170,15 @@ make build       # Build linux/amd64 by default
 make build-all   # Build all release platforms into the Buildx cache
 make structure   # Verify package, config, and image cleanup
 make smoke       # Verify initialization, TCP auth, init files, and persistence
-make smoke-all   # Build and smoke all platforms under native/QEMU execution
+make smoke-all   # Attempt the lifecycle smoke test on every release platform
 make run         # Run the selected image locally
 make shell       # Open Bash in the selected image
 ```
 
 Override `PLATFORM`, `IMAGE`, `VERSION`, `ROOT_PASSWORD`, or `PORT` as needed.
 Multi-platform targets require a Buildx builder with the corresponding QEMU
-handlers.
+handlers. `make smoke-all` fails honestly when the host emulator cannot run an
+architecture's MySQL bootstrap; this is a known possibility for `arm/v5`.
 
 ## Releases
 

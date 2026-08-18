@@ -72,5 +72,7 @@ for `linux/amd64`, `linux/386`, and `linux/arm/v5`.
 - Keep pinned APT installation before local `COPY` instructions.
 - Keep shell compatible with Debian Etch's Bash 3 and validate with `bash -n`.
 - Preserve Docker Official Image semantics where MySQL 5.0 supports them.
+- Treat QEMU execution of `linux/arm/v5` as best effort; Buildx output is
+  supported, but MySQL's legacy threaded bootstrap requires native validation.
 - Use non-interactive cleanup and never commit database dumps.
 - Run `make structure` and `make smoke` after runtime changes.

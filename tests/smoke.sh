@@ -23,7 +23,7 @@ trap cleanup EXIT
 
 wait_for_mysql() {
     local attempt running
-    for attempt in $(seq 1 120); do
+    for attempt in $(seq 1 "${MYSQL_WAIT_ATTEMPTS:-120}"); do
         running="$(docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null || true)"
         if [ "$running" != true ]; then
             docker logs "$CONTAINER" >&2 || true
@@ -41,6 +41,7 @@ wait_for_mysql() {
 query_from_peer() {
     docker run --rm --platform="$PLATFORM" --network="$NETWORK" \
         --entrypoint mysql "$IMAGE" --protocol=TCP --host=db \
+        --connect-timeout="${MYSQL_CONNECT_TIMEOUT:-3}" \
         --user="$1" --password="$2" --batch --skip-column-names \
         --execute="$3"
 }
