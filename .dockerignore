@@ -1,0 +1,12 @@
+.git
+.beads
+.agents
+.claude
+.codex
+.github
+docs
+tests
+*.md
+Makefile
+LICENSE
+.releaserc.json

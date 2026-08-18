@@ -5,3 +5,8 @@
 .beads-credential-key
 # bd worktree
 .worktrees/mysql50-image/
+
+# Local database dumps and smoke artifacts
+/*.sql
+/*.sql.gz
+/mysql50-multiarch.tar
