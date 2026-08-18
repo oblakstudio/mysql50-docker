@@ -3,3 +3,5 @@
 .dolt/
 *.db
 .beads-credential-key
+# bd worktree
+.worktrees/mysql50-image/
